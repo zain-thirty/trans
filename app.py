@@ -9,7 +9,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 @app.route('/transcript', methods=['POST'])
 def get_transcript():
     # Get the JSON payload from the request body
-   @app.route('/get_transcript', methods=['POST'])
+@app.route('/get_transcript', methods=['POST'])
 def get_transcript():
     # data = request.json
     # url = data.get('url')
