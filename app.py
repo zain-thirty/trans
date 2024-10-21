@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request
 from langchain_community.document_loaders import YoutubeLoader
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 @app.route('/transcript', methods=['POST'])
 def get_transcript():
@@ -32,4 +34,4 @@ def get_transcript():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
