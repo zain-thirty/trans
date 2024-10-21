@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 
-@app.route('/get_transcript', methods=['POST'])
+# @app.route('/get_transcript', methods=['POST'])
 def get_transcript():
     # data = request.json
     # url = data.get('url')
@@ -19,7 +19,6 @@ def get_transcript():
 
     # if not video_id:
     #     return jsonify({"error": "Invalid YouTube URL"}), 400
-
     try:
         # Fetch transcript
         transcript = YouTubeTranscriptApi.get_transcript("Ma35a2h26Ec", languages=['en'])
@@ -30,5 +29,6 @@ def get_transcript():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000)
+get_transcript()
