@@ -9,29 +9,28 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 @app.route('/transcript', methods=['POST'])
 def get_transcript():
     # Get the JSON payload from the request body
-    request_data = request.get_json()
-    
-    if not request_data or 'url' not in request_data:
-        return jsonify({'error': 'You must provide a YouTube URL in the request body'}), 400
-    
-    youtube_url = request_data['url']
-    
+   @app.route('/get_transcript', methods=['POST'])
+def get_transcript():
+    # data = request.json
+    # url = data.get('url')
+
+    # if not url:
+    #     return jsonify({"error": "URL is required"}), 400
+
+    # video_id = extract_video_id(url)
+
+    # if not video_id:
+    #     return jsonify({"error": "Invalid YouTube URL"}), 400
+
     try:
-        # Load the YouTube transcript
-        loader = YoutubeLoader.from_youtube_url(youtube_url, add_video_info=False)
-        documents = loader.load()
+        # Fetch transcript
+        transcript = YouTubeTranscriptApi.get_transcript("Ma35a2h26Ec", languages=['en'])
+        print(transcript)
+        transcript_text = " ".join([t['text'] for t in transcript])
 
-        # Convert the documents to a JSON format
-        data = []
-        for doc in documents:
-            data.append({
-                'transcript': doc.page_content,
-            })
-
-        return jsonify(data)
+        return jsonify({"transcript_text": transcript_text}), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
