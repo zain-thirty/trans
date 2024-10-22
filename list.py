@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import http.client
 import urllib.parse
 import json
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS to allow cross-origin requests
 
 def get_youtube_transcript(video_url):
     conn = http.client.HTTPSConnection("youtube-transcripts.p.rapidapi.com")
@@ -29,7 +31,7 @@ def get_youtube_transcript(video_url):
 @app.route('/transcript', methods=['POST'])
 def transcript():
     try:
-        # Get the video URL from the request body (JSON format)
+        # Get the video URL from the JSON request body
         req_data = request.get_json()
         video_url = req_data.get('video_url')
         
