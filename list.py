@@ -35,7 +35,7 @@ def get_youtube_transcript(video_url):
     
     # Return the concatenated transcript text as well
     return {
-        "transcript": transcript_json,
+        
         "all_text": all_text.strip()  # Remove trailing spaces
     }
 
