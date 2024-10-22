@@ -25,7 +25,19 @@ def get_youtube_transcript(video_url):
     data = res.read()
     
     # Decode the response and parse it as JSON
-    return json.loads(data.decode("utf-8"))
+    transcript_json = json.loads(data.decode("utf-8"))
+    
+    # Extract all text from the transcript segments
+    all_text = ""
+    if 'content' in transcript_json:
+        for segment in transcript_json['content']:
+            all_text += segment['text'] + " "  # Add each segment text with a space
+    
+    # Return the concatenated transcript text as well
+    return {
+        "transcript": transcript_json,
+        "all_text": all_text.strip()  # Remove trailing spaces
+    }
 
 # Define an endpoint to retrieve transcript
 @app.route('/transcript', methods=['POST'])
@@ -39,8 +51,8 @@ def transcript():
             return jsonify({"error": "No video URL provided"}), 400
         
         # Get transcript for the given video URL
-        transcript_json = get_youtube_transcript(video_url)
-        return jsonify(transcript_json)
+        transcript_data = get_youtube_transcript(video_url)
+        return jsonify(transcript_data)
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
