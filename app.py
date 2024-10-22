@@ -40,6 +40,6 @@ def get_transcript_simple(url):
 # Example usage
 if __name__ == "__main__":
     # Provide a YouTube URL to test
-    url = "https://www.youtube.com/watch?v=Ma35a2h26Ec"
+    url = "http://youtu.be/Ma35a2h26Ec?si=o8ZOwJwkG"
     result = get_transcript_simple(url)
     print(result)
