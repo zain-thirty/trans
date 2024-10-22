@@ -1,6 +1,9 @@
 import logging
 from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api._api import TranscriptApiException
 import re
+import os
+import requests
 
 # Set up logging for debugging
 logging.basicConfig(level=logging.DEBUG)
@@ -18,7 +21,7 @@ def extract_video_id(url):
             return match.group(1)
     return None
 
-# Function to fetch transcript from video ID
+# Function to fetch transcript using a proxy
 def fetch_transcript(url):
     if not url:
         logging.error("URL is missing")
@@ -31,8 +34,23 @@ def fetch_transcript(url):
         return {"error": "Invalid YouTube URL"}
 
     try:
-        # Fetch transcript
-        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        # Set up proxies (adjust as needed)
+        proxies = {
+            "http": os.getenv("HTTP_PROXY", ""),  # Add your HTTP proxy here if necessary
+            "https": os.getenv("HTTPS_PROXY", "")  # Add your HTTPS proxy here if necessary
+        }
+        
+        # Test the proxy connection before making the API request
+        test_url = "http://google.com"
+        try:
+            requests.get(test_url, proxies=proxies, timeout=5)
+            logging.info("Proxy connection successful")
+        except requests.RequestException as e:
+            logging.error(f"Failed to connect via proxy: {e}")
+            return {"error": f"Proxy connection failed: {e}"}
+        
+        # Fetch transcript through the proxy
+        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'], proxies=proxies)
         logging.debug(f"Transcript fetched: {transcript}")
 
         # Join all transcript text
@@ -40,8 +58,11 @@ def fetch_transcript(url):
 
         return {"transcript_text": transcript_text}
 
-    except Exception as e:
+    except TranscriptApiException as e:
         logging.error(f"Error occurred while fetching transcript: {str(e)}")
+        return {"error": str(e)} 
+    except Exception as e:
+        logging.error(f"An unexpected error occurred: {str(e)}")
         return {"error": str(e)}
 
 # Example usage
