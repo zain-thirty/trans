@@ -40,7 +40,7 @@ def fetch_transcript(url):
         }
         
         # Test the proxy connection before making the API request
-        test_url = "http://google.com"
+        test_url = "http://youtube.com"
         try:
             requests.get(test_url, proxies=proxies, timeout=5)
             logging.info("Proxy connection successful")
