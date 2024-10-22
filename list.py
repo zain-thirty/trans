@@ -17,7 +17,7 @@ def get_youtube_transcript(video_url):
     
     # Encode the video URL for the API request
     encoded_url = urllib.parse.quote(video_url)
-    request_url = f"/youtube/transcript?url={encoded_url}&chunkSize=500"
+    request_url = f"/youtube/transcript?url={encoded_url}"
     
     conn.request("GET", request_url, headers=headers)
     
