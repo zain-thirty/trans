@@ -1,6 +1,9 @@
+from flask import Flask, request, jsonify
 import http.client
 import urllib.parse
 import json
+
+app = Flask(__name__)
 
 def get_youtube_transcript(video_url):
     conn = http.client.HTTPSConnection("youtube-transcripts.p.rapidapi.com")
@@ -22,7 +25,23 @@ def get_youtube_transcript(video_url):
     # Decode the response and parse it as JSON
     return json.loads(data.decode("utf-8"))
 
-# Example usage:
-video_url = "https://youtu.be/Ma35a2h26Ec?si=o8ZOwJwkG"
-transcript_json = get_youtube_transcript(video_url)
-print(transcript_json)
+# Define an endpoint to retrieve transcript
+@app.route('/transcript', methods=['POST'])
+def transcript():
+    try:
+        # Get the video URL from the request body (JSON format)
+        req_data = request.get_json()
+        video_url = req_data.get('video_url')
+        
+        if not video_url:
+            return jsonify({"error": "No video URL provided"}), 400
+        
+        # Get transcript for the given video URL
+        transcript_json = get_youtube_transcript(video_url)
+        return jsonify(transcript_json)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
