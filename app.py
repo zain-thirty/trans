@@ -1,6 +1,5 @@
 import logging
 from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api._api import TranscriptApiException
 import re
 import os
 import requests
@@ -58,12 +57,9 @@ def fetch_transcript(url):
 
         return {"transcript_text": transcript_text}
 
-    except TranscriptApiException as e:
+    except Exception as e:
         logging.error(f"Error occurred while fetching transcript: {str(e)}")
         return {"error": str(e)} 
-    except Exception as e:
-        logging.error(f"An unexpected error occurred: {str(e)}")
-        return {"error": str(e)}
 
 # Example usage
 if __name__ == "__main__":
